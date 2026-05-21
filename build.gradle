@@ -5,7 +5,7 @@ buildscript {
 		maven { url "https://repo.sleeping.town" }
 	}
 	dependencies {
-		classpath "agency.highlysuspect:voldeloom:2.4" 
+		classpath "agency.highlysuspect:voldeloom:2.5-SNAPSHOT"
 	}
 }
 
@@ -41,6 +41,13 @@ dependencies {
 	modCompileOnly name: "BasicComponents", version: "1.2.5.337", ext: "jar"
 	modCompileOnly name: "ICBM-Explosion", version: "1.0.5.166", ext: "jar"
 	modCompileOnly name: "ThermalExpansion", version: "2.2.2.2", ext: "zip"
+}
+
+processResources {
+	inputs.property "version", project.version
+	filesMatching("mcmod.info") {
+		expand version: project.version
+	}
 }
 
 volde {

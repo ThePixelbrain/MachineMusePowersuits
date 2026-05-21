@@ -2,7 +2,7 @@
     "modid": "mmmPowersuits",
     "name": "MachineMuse's Modular Powersuits",
     "description": "A mod which adds modular power armor, power tool, and a tinker table to configure them. Uses UniversalElectricty or IC2 for energy.",
-    "version": "@MOD_VERSION@",
+    "version": "${version}",
     "mcversion": "1.4.7",
     "url": "http://machinemuse.net/",
     "updateUrl": "",
