@@ -117,8 +117,8 @@ public abstract class MuseCommonStrings {
 	/**
 	 * Sounds
 	 */
-	private static final String SOUND_RESOURCE_LOCATION = "resources/machinemuse/sound/";
-	private static final String SOUND_PREFIX = "resources.machinemuse.sound.";
+	private static final String SOUND_RESOURCE_LOCATION = "machinemuse/sound/";
+	private static final String SOUND_PREFIX = "machinemuse.sound.";
 
 	public static String[] soundFiles = {
 			SOUND_RESOURCE_LOCATION + "Glider.ogg",

@@ -38,16 +38,16 @@ import cpw.mods.fml.relauncher.Side;
  * 
  */
 public class Config {
-	public static final String SEBK_ICON_PATH = "/resources/machinemuse/sebkicons.png";
-	public static final String SEBK_ARMOR_PATH = "/resources/machinemuse/sebkarmor.png";
-	public static final String SEBK_ARMORPANTS_PATH = "/resources/machinemuse/sebkarmorpants.png";
-	public static final String WC_ICON_PATH = "/resources/machinemuse/watericons.png";
-	public static final String TINKERTABLE_TEXTURE_PATH = "/resources/machinemuse/tinkertable_tx.png";
-	public static final String BLANK_ARMOR_MODEL_PATH = "/resources/machinemuse/blankarmor.png";
-	public static final String MUSE_ICON_PATH = "/resources/machinemuse/museicons.png";
-	public static final String SEBK_TOOL_TEXTURE = "/resources/machinemuse/tool.png";
-	public static final String CITIZENJOE_ARMOR_PATH = "/resources/machinemuse/joearmor.png";
-	public static final String CITIZENJOE_ARMORPANTS_PATH = "/resources/machinemuse/joearmorpants.png";
+	public static final String SEBK_ICON_PATH = "/machinemuse/sebkicons.png";
+	public static final String SEBK_ARMOR_PATH = "/machinemuse/sebkarmor.png";
+	public static final String SEBK_ARMORPANTS_PATH = "/machinemuse/sebkarmorpants.png";
+	public static final String WC_ICON_PATH = "/machinemuse/watericons.png";
+	public static final String TINKERTABLE_TEXTURE_PATH = "/machinemuse/tinkertable_tx.png";
+	public static final String BLANK_ARMOR_MODEL_PATH = "/machinemuse/blankarmor.png";
+	public static final String MUSE_ICON_PATH = "/machinemuse/museicons.png";
+	public static final String SEBK_TOOL_TEXTURE = "/machinemuse/tool.png";
+	public static final String CITIZENJOE_ARMOR_PATH = "/machinemuse/joearmor.png";
+	public static final String CITIZENJOE_ARMORPANTS_PATH = "/machinemuse/joearmorpants.png";
 
 	private static final int[] assignedItemIDs = new int[Items.values().length];
 	private static final int[] assignedBlockIDs = new int[Blocks.values().length];
