@@ -17,6 +17,7 @@ import net.machinemuse.general.MuseMathUtils;
 import net.machinemuse.powersuits.common.MuseLogger;
 import net.machinemuse.powersuits.common.PlayerInputMap;
 import net.machinemuse.powersuits.event.MovementManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemFood;
@@ -49,8 +50,6 @@ public class PlayerTickHandler implements ITickHandler {
 		handle(player);
 
 	}
-
-	// int gliderTicker = 0, swimTicker = 0;
 
 	public void handle(EntityPlayer player) {
 		List<ItemStack> modularItemsEquipped = MuseItemUtils.modularItemsEquipped(player);
@@ -96,6 +95,13 @@ public class PlayerTickHandler implements ITickHandler {
 		boolean hasFeeder = false;
 		boolean hasSolarGeneration = false;
 		boolean hasKineticGeneration = false;
+
+		// Minecraft only supports one continuous/looping sound per entity at a time (see
+		// SoundManager.playEntitySound/stopEntitySound) - the movement modules below pick at most
+		// one to loop for this tick
+		String movementLoopSound = null;
+		float movementLoopVolume = 1.0F;
+		float movementLoopPitch = 1.0F;
 
 		for (IPlayerTickModule module : ModuleManager.getPlayerTickModules()) {
 			for (ItemStack itemStack : modularItemsEquipped) {
@@ -196,17 +202,9 @@ public class PlayerTickHandler implements ITickHandler {
 				if (swimEnergyConsumption + totalEnergyDrain < totalEnergy) {
 					totalEnergyDrain += swimEnergyConsumption;
 
-					// if (swimTicker == 0) {
-					// world.playSoundAtEntity(player,
-					// MuseCommonStrings.SOUND_SWIM_ASSIST, 2.0F, 1.0F);
-					// swimTicker++;
-					// }
-					// else {
-					// swimTicker++;
-					// if (swimTicker >= 60) {
-					// swimTicker = 0;
-					// }
-					// }
+					movementLoopSound = MuseCommonStrings.SOUND_SWIM_ASSIST;
+					movementLoopVolume = 2.0F;
+
 					// Forward/backward movement
 					player.motionX += player.getLookVec().xCoord * swimAssistRate * forwardkey / moveRatio;
 					player.motionY += player.getLookVec().yCoord * swimAssistRate * forwardkey / moveRatio;
@@ -327,6 +325,8 @@ public class PlayerTickHandler implements ITickHandler {
 
 						totalEnergyDrain += jetEnergy * (vx * vx + vy * vy + vz * vz);
 
+						movementLoopSound = pickJetSound(hasJetpack, hasJetboots);
+						movementLoopVolume = hasJetpack ? (float) (thrust * 6.25) : (float) (thrust * 12.5);
 					} else if (jumpkey && player.motionY < 0.5) {
 						totalEnergyDrain += jetEnergy;
 						if (forwardkey == 0) {
@@ -336,6 +336,8 @@ public class PlayerTickHandler implements ITickHandler {
 							player.motionX += playerHorzFacing.xCoord * thrust / 2 * Math.signum(forwardkey);
 							player.motionZ += playerHorzFacing.zCoord * thrust / 2 * Math.signum(forwardkey);
 						}
+						movementLoopSound = pickJetSound(hasJetpack, hasJetboots);
+						movementLoopVolume = hasJetpack ? (float) (thrust * 6.25) : (float) (thrust * 12.5);
 					}
 				}
 
@@ -352,17 +354,8 @@ public class PlayerTickHandler implements ITickHandler {
 					// sprinting speed
 					player.jumpMovementFactor += 0.03f;
 
-					// if (gliderTicker == 0) {
-					// world.playSoundAtEntity(player,
-					// MuseCommonStrings.SOUND_GLIDER, 5.0F, 1.0F);
-					// gliderTicker++;
-					// }
-					// else {
-					// gliderTicker++;
-					// if (gliderTicker >= 35) {
-					// gliderTicker = 0;
-					// }
-					// }
+					movementLoopSound = MuseCommonStrings.SOUND_GLIDER;
+					movementLoopVolume = 5.0F;
 				}
 			}
 
@@ -477,6 +470,12 @@ public class PlayerTickHandler implements ITickHandler {
 			player.motionX *= weightCapacity / totalWeight;
 			player.motionZ *= weightCapacity / totalWeight;
 		}
+
+		if (movementLoopSound != null) {
+			Minecraft.getMinecraft().sndManager.playEntitySound(movementLoopSound, player, movementLoopVolume, movementLoopPitch, true);
+		} else {
+			Minecraft.getMinecraft().sndManager.stopEntitySound(player);
+		}
 	}
 
 	public static double getWeightPenaltyRatio(double currentWeight, double capacity) {
@@ -484,6 +483,16 @@ public class PlayerTickHandler implements ITickHandler {
 			return 1;
 		} else {
 			return capacity / currentWeight;
+		}
+	}
+
+	private String pickJetSound(boolean hasJetpack, boolean hasJetboots) {
+		if (hasJetpack) {
+			return MuseCommonStrings.SOUND_JETPACK;
+		} else if (hasJetboots) {
+			return MuseCommonStrings.SOUND_JET_BOOTS;
+		} else {
+			return null;
 		}
 	}
 

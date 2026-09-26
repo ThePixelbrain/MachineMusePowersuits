@@ -8,6 +8,7 @@ import net.machinemuse.api.MuseCommonStrings;
 import net.machinemuse.api.ModuleManager;
 import net.machinemuse.api.MuseItemUtils;
 import net.machinemuse.powersuits.item.ItemPowerArmor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -40,6 +41,9 @@ public class MovementManager {
 				double drain = ModuleManager.computeModularProperty(stack, MuseCommonStrings.JUMP_ENERGY_CONSUMPTION);
 				double avail = ElectricItemUtils.getPlayerEnergy(player);
 				if (drain < avail) {
+					if (player.worldObj.isRemote) {
+						Minecraft.getMinecraft().sndManager.playSound(MuseCommonStrings.SOUND_JUMP_ASSIST, (float) player.posX, (float) player.posY, (float) player.posZ, (float) (jumpAssist / 8.0), 1.0F);
+					}
 					ElectricItemUtils.drainPlayerEnergy(player, drain);
 					setPlayerJumpTicks(player, jumpAssist);
 					double jumpCompensationRatio = ModuleManager.computeModularProperty(stack, MuseCommonStrings.JUMP_FOOD_COMPENSATION);

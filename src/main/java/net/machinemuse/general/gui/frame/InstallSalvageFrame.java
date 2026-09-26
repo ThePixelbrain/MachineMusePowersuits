@@ -3,6 +3,7 @@ package net.machinemuse.general.gui.frame;
 import java.util.List;
 
 import net.machinemuse.api.IPowerModule;
+import net.machinemuse.api.MuseCommonStrings;
 import net.machinemuse.api.MuseItemUtils;
 import net.machinemuse.general.MuseRenderer;
 import net.machinemuse.general.geometry.Colour;
@@ -13,6 +14,7 @@ import net.machinemuse.general.gui.clickable.ClickableModule;
 import net.machinemuse.powersuits.network.MusePacket;
 import net.machinemuse.powersuits.network.packets.MusePacketInstallModuleRequest;
 import net.machinemuse.powersuits.network.packets.MusePacketSalvageModuleRequest;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.network.Player;
@@ -165,6 +167,7 @@ public class InstallSalvageFrame extends ScrollableFrame {
 		ItemStack stack = targetItem.getSelectedItem().getItem();
 		IPowerModule module = targetModule.getSelectedModule().getModule();
 		if (player.capabilities.isCreativeMode || MuseItemUtils.hasInInventory(module.getInstallCost(), player.inventory)) {
+			Minecraft.getMinecraft().sndManager.playSoundFX(MuseCommonStrings.SOUND_GUI_INSTALL, 1.0F, 1.0F);
 			// Now send request to server to make it legit
 			MusePacket newpacket = new MusePacketInstallModuleRequest(
 					(Player) player,

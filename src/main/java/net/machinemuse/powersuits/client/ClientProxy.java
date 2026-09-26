@@ -15,6 +15,7 @@ import net.machinemuse.powersuits.network.MusePacketHandler;
 import net.machinemuse.powersuits.tick.ClientTickHandler;
 import net.machinemuse.powersuits.tick.PlayerTickHandler;
 import net.machinemuse.powersuits.tick.RenderTickHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -77,7 +78,11 @@ public class ClientProxy extends CommonProxy {
 		clientTickHandler = new ClientTickHandler();
 		TickRegistry.registerTickHandler(clientTickHandler, Side.CLIENT);
 
-		MinecraftForge.EVENT_BUS.register(new SoundEventHandler());
+		SoundEventHandler soundEventHandler = new SoundEventHandler();
+		MinecraftForge.EVENT_BUS.register(soundEventHandler);
+		// Manually register sounds because we are too late in the game lifecycle for
+		// catching the event on first launch
+		soundEventHandler.registerSounds(Minecraft.getMinecraft().sndManager);
 
 		if (ModCompatability.isThaumCraftLoaded() && ModCompatability.enableThaumGogglesModule()) {
 			MinecraftForge.EVENT_BUS.register(new ThaumRenderEventHandler());

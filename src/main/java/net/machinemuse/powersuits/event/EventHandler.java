@@ -6,6 +6,7 @@ import net.machinemuse.api.ModuleManager;
 import net.machinemuse.api.MuseCommonStrings;
 import net.machinemuse.api.MuseItemUtils;
 import net.machinemuse.powersuits.item.ItemPowerTool;
+import net.minecraft.client.Minecraft;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -79,6 +80,9 @@ public class EventHandler {
 				double energy = ElectricItemUtils.getPlayerEnergy(player);
 				double energyConsumption = ModuleManager.computeModularProperty(helmet, MuseCommonStrings.WATERBREATHING_ENERGY_CONSUMPTION);
 				if (energy > energyConsumption && player.getAir() < 10) {
+					if (player.worldObj.isRemote) {
+						Minecraft.getMinecraft().sndManager.playSound(MuseCommonStrings.SOUND_WATER_ELECTROLYZER, (float) player.posX, (float) player.posY, (float) player.posZ, 1.0F, 1.0F);
+					}
 					ElectricItemUtils.drainPlayerEnergy(player, energyConsumption);
 					player.setAir(300);
 				}
