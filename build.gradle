@@ -3,13 +3,16 @@ buildscript {
 		mavenCentral()
 		maven { url "https://maven.fabricmc.net" }
 		maven { url "https://repo.sleeping.town" }
+		maven { url "https://plugins.gradle.org/m2/" }
 	}
 	dependencies {
 		classpath "agency.highlysuspect:voldeloom:2.5-SNAPSHOT"
+		classpath "com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:7.1.2"
 	}
 }
 
 apply plugin: "agency.highlysuspect.voldeloom"
+apply plugin: "com.github.johnrengelman.shadow"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(11) //Last version able to set a --release as low as 6
 compileJava.options.release.set(6) //Forge doesn't understand classes compiled to versions of the class-file format newer than Java 6's
@@ -17,7 +20,7 @@ compileJava.options.release.set(6) //Forge doesn't understand classes compiled t
 String minecraftVersion = "1.4.7"
 String forgeVersion = "1.4.7-6.6.2.534"
 
-archivesBaseName = "ModualrPowersuits"
+archivesBaseName = "ModularPowersuits"
 version = "0.3.2"
 
 repositories {
@@ -35,12 +38,15 @@ dependencies {
 	forge "net.minecraftforge:forge:${forgeVersion}:universal@zip"
 	mappings "net.minecraftforge:forge:${forgeVersion}:src@zip"
 
-	modImplementation name: "industrialcraft-2", version: "1.115.231-lf", ext: "jar"
 
-	modCompileOnly name: "AtomicScience", version: "0.4.1.162", ext: "jar"
-	modCompileOnly name: "BasicComponents", version: "1.2.5.337", ext: "jar"
-	modCompileOnly name: "ICBM-Explosion", version: "1.0.5.166", ext: "jar"
-	modCompileOnly name: "ThermalExpansion", version: "2.2.2.2", ext: "zip"
+	// MPS implements a few interfaces from these mods as optional/soft compat, but none
+	// of them need to be installed at runtime: only a filtered slice of their API classes (see
+	// shadowJar below) gets embedded into the release jar.
+	modImplementation name: "industrialcraft-2", version: "1.115.231-lf", ext: "jar"
+	modImplementation name: "AtomicScience", version: "0.4.1.162", ext: "jar"
+	modImplementation name: "BasicComponents", version: "1.2.5.337", ext: "jar" // carries universalelectricity.core.*
+	modImplementation name: "ICBM-Explosion", version: "1.0.5.166", ext: "jar"
+	modImplementation name: "ThermalExpansion", version: "2.2.2.2", ext: "zip"
 }
 
 processResources {
@@ -52,4 +58,48 @@ processResources {
 
 volde {
 	//more configuration goes here...
+}
+
+jar {
+	archiveClassifier.set("dev")
+}
+
+shadowJar {
+	archiveClassifier.set("shaded")
+
+	configurations = []
+	from(sourceSets.main.output)
+}
+
+remapJarForRelease {
+	dependsOn shadowJar
+	input.set(shadowJar.archiveFile)
+}
+
+// modImplementationNamed only gets populated with the remapped mod jars inside Voldeloom's own
+// afterEvaluate hook, so this has to run in a *later*-registered afterEvaluate to see real content.
+// (The mod jars' contents are precomputed into a local var - calling zipTree() inline inside the
+// shadowJar{} configuration closure below silently produces no files, for reasons that didn't
+// repay further digging.)
+afterEvaluate {
+	List<FileTree> modTrees = configurations.modImplementationNamed.files.collect { zipTree(it) }
+	shadowJar {
+		from(modTrees) {
+			include 'ic2/api/ICustomElectricItem.class'
+			include 'ic2/api/IElectricItem.class'
+			include 'ic2/api/Ic2Recipes.class'
+			include 'icbm/api/explosion/**'
+			include 'atomicscience/api/IAntiPoisonArmor.class'
+			include 'atomicscience/api/Poison.class'
+			include 'atomicscience/api/Poison$ArmorType.class'
+			include 'thermalexpansion/api/core/IChargeableItem.class'
+			include 'thermalexpansion/api/core/ItemRegistry.class'
+			include 'universalelectricity/core/implement/**'
+			include 'universalelectricity/core/vector/**'
+			include 'universalelectricity/core/electricity/ElectricInfo*.class'
+			include 'universalelectricity/core/electricity/ElectricityPack.class'
+			include 'universalelectricity/core/electricity/ElectricityNetwork.class'
+			include 'universalelectricity/core/electricity/ElectricityConnections.class'
+		}
+	}
 }
