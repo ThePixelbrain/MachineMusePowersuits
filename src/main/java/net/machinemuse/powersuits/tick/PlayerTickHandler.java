@@ -374,7 +374,7 @@ public class PlayerTickHandler implements ITickHandler {
 			if (hasSprintAssist) {}
 		}
 		// Food Module
-		if (hasFeeder) {
+		if (hasFeeder && !world.isRemote) {
 			IInventory inv = player.inventory;
 			double foodLevel = (double) MuseItemUtils.getFoodLevel(helmet);
 			double saturationLevel = MuseItemUtils.getSaturationLevel(helmet);
@@ -471,10 +471,12 @@ public class PlayerTickHandler implements ITickHandler {
 			player.motionZ *= weightCapacity / totalWeight;
 		}
 
-		if (movementLoopSound != null) {
-			Minecraft.getMinecraft().sndManager.playEntitySound(movementLoopSound, player, movementLoopVolume, movementLoopPitch, true);
-		} else {
-			Minecraft.getMinecraft().sndManager.stopEntitySound(player);
+		if (world.isRemote) {
+			if (movementLoopSound != null) {
+				Minecraft.getMinecraft().sndManager.playEntitySound(movementLoopSound, player, movementLoopVolume, movementLoopPitch, true);
+			} else {
+				Minecraft.getMinecraft().sndManager.stopEntitySound(player);
+			}
 		}
 	}
 
