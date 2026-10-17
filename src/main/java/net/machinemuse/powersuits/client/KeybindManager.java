@@ -27,6 +27,7 @@ public class KeybindManager {
 	// only stores keybindings relevant to us!!
 	protected Set<ClickableKeybinding> keybindings;
 	protected static KeybindManager instance;
+	private static boolean loaded = false;
 
 	protected KeybindManager() {
 		keybindings = new HashSet();
@@ -78,6 +79,19 @@ public class KeybindManager {
 		}
 	}
 
+	/**
+	 * Reads the keybind file the first time it's called. Must not run before
+	 * FML has applied options.txt to the other mods' keybindings (end of
+	 * startup), otherwise keys still sitting on another mod's default code
+	 * look taken and get skipped.
+	 */
+	public static void loadKeybindsOnce() {
+		if (!loaded) {
+			loaded = true;
+			readInKeybinds();
+		}
+	}
+
 	public static void readInKeybinds() {
 		try {
 			File file = new File(Loader.instance().getConfigDir(), "powersuits-keybinds.cfg");
@@ -97,6 +111,7 @@ public class KeybindManager {
 						workingKeybinding = new ClickableKeybinding(new KeyBinding(Keyboard.getKeyName(id), id), position);
 						getInstance().keybindings.add(workingKeybinding);
 					} else {
+						MuseLogger.logError("Skipping powersuits keybind " + Keyboard.getKeyName(id) + ": key is already bound to something else.");
 						workingKeybinding = null;
 					}
 
@@ -107,6 +122,8 @@ public class KeybindManager {
 					if (module != null) {
 						ClickableModule cmodule = new ClickableModule(module, position);
 						workingKeybinding.bindModule(cmodule);
+					} else {
+						MuseLogger.logError("Skipping unknown module " + exploded[0] + " in powersuits keybind file.");
 					}
 
 				}

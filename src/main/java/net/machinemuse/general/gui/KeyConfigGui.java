@@ -11,7 +11,7 @@ public class KeyConfigGui extends MuseGui {
 
 	public KeyConfigGui(EntityPlayer player) {
 		super();
-		KeybindManager.readInKeybinds();
+		KeybindManager.loadKeybindsOnce();
 		this.player = player;
 		this.xSize = 256;
 		this.ySize = 226;

@@ -21,6 +21,7 @@ import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
@@ -66,7 +67,9 @@ public class ClientProxy extends CommonProxy {
 		super.registerHandlers();
 		keybindHandler = new KeybindKeyHandler();
 		KeyBindingRegistry.registerKeyBinding(keybindHandler);
-		KeybindManager.readInKeybinds();
+		// Keybinds are read on login, once FML has applied options.txt to every
+		// mod's keybindings; see KeybindManager.loadKeybindsOnce()
+		NetworkRegistry.instance().registerConnectionHandler(new KeybindConnectionHandler());
 
 		playerTickHandler = new PlayerTickHandler();
 		TickRegistry.registerTickHandler(playerTickHandler, Side.CLIENT);
