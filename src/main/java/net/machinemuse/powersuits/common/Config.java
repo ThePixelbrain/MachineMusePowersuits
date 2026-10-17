@@ -1,5 +1,6 @@
 package net.machinemuse.powersuits.common;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,7 +24,9 @@ import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
 
 import org.lwjgl.input.Keyboard;
 
@@ -65,6 +68,7 @@ public class Config {
 	public static void init(Configuration config) {
 		Config.config = config;
 		config.load();
+		migrateRenamedModules(config);
 
 		// Request block IDs
 		for (Blocks b : Blocks.values()) {
@@ -78,6 +82,38 @@ public class Config {
 					config.getItem(i.englishName, i.defaultItemID).getInt();
 		}
 		config.save();
+	}
+
+	/**
+	 * Carries over the config entries of renamed modules: whether the module is
+	 * allowed ("Modules", keyed by name) and its tweaked properties
+	 * ("Properties", keyed by "name.property..."). Forge lowercases category
+	 * names.
+	 */
+	private static void migrateRenamedModules(Configuration config) {
+		ConfigCategory modules = config.categories.get("modules");
+		ConfigCategory properties = config.categories.get("properties");
+		for (String[] rename : MuseCommonStrings.RENAMED_MODULES) {
+			renameConfigKey(modules, rename[0], rename[1]);
+			if (properties != null) {
+				for (String key : new ArrayList<String>(properties.keySet())) {
+					if (key.startsWith(rename[0] + ".")) {
+						renameConfigKey(properties, key, rename[1] + key.substring(rename[0].length()));
+					}
+				}
+			}
+		}
+	}
+
+	private static void renameConfigKey(ConfigCategory category, String oldKey, String newKey) {
+		if (category == null || !category.containsKey(oldKey)) {
+			return;
+		}
+		Property property = category.remove(oldKey);
+		if (!category.containsKey(newKey)) {
+			property.setName(newKey);
+			category.put(newKey, property);
+		}
 	}
 
 	/**

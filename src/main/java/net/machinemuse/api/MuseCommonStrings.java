@@ -97,6 +97,16 @@ public abstract class MuseCommonStrings {
 	public static final String MODULE_SOLAR_GENERATOR = "Solar Generator";
 	public static final String MODULE_KINETIC_GENERATOR = "Kinetic Generator";
 	public static final String MODULE_PORTABLE_CRAFTING = "In-Place Assembler";
+	public static final String MODULE_MAGICAL_SENSE = "Magical Sense";
+	/**
+	 * Modules that were renamed, as { old name, new name }. Installed modules
+	 * and their config entries are stored under their name, so items with the
+	 * old name are migrated when their tag is read, and the config when it is
+	 * loaded (Config.init).
+	 */
+	public static final String[][] RENAMED_MODULES = {
+			{ "Aurameter", MODULE_MAGICAL_SENSE}
+	};
 	public static final String CITIZEN_JOE_STYLE = "Citizen Joe Style";
 	public static final String MODULE_MULTIMETER = "Multimeter";
 	public static final String MODULE_HAZMAT = "Radiation Shielding";

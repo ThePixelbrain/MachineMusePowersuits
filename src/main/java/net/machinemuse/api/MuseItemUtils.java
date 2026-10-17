@@ -131,7 +131,19 @@ public class MuseItemUtils {
 			stackTag.setCompoundTag(NBTPREFIX,
 					properties);
 		}
+		migrateRenamedModules(properties);
 		return properties;
+	}
+
+	private static void migrateRenamedModules(NBTTagCompound properties) {
+		for (String[] rename : MuseCommonStrings.RENAMED_MODULES) {
+			if (properties.hasKey(rename[0])) {
+				if (!properties.hasKey(rename[1])) {
+					properties.setTag(rename[1], properties.getTag(rename[0]));
+				}
+				properties.removeTag(rename[0]);
+			}
+		}
 	}
 
 	/**

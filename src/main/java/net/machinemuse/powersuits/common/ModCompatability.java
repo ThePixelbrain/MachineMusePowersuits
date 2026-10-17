@@ -135,10 +135,10 @@ public class ModCompatability {
 				Field itemGoggles = tcItems.getField("itemGoggles");
 				Item goggles = (Item) itemGoggles.get(itemGoggles);
 				gogglesStack = new ItemStack(goggles);
-				IPowerModule module = new PowerModule("Aurameter", Arrays.asList((IModularItem) ModularPowersuits.powerArmorHead), new MuseIcon(
+				IPowerModule module = new PowerModule(MuseCommonStrings.MODULE_MAGICAL_SENSE, Arrays.asList((IModularItem) ModularPowersuits.powerArmorHead), new MuseIcon(
 						"/thaumcraft/resources/ss_core.png", 144), MuseCommonStrings.CATEGORY_SPECIAL)
 						.setDescription(
-								"Connect up some Thaumic goggles to show the nearby aura values. (Does not reveal aura nodes, only shows the HUD)")
+								"Connect up some Thaumic Goggles to reveal all the magic happening around you.")
 						.addInstallCost(ItemComponent.laserHologram.copy())
 						.addInstallCost(gogglesStack);
 				ModuleManager.addModule(module);

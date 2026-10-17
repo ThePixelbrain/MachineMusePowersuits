@@ -88,7 +88,10 @@ public class ClientProxy extends CommonProxy {
 		soundEventHandler.registerSounds(Minecraft.getMinecraft().sndManager);
 
 		if (ModCompatability.isThaumCraftLoaded() && ModCompatability.enableThaumGogglesModule()) {
-			MinecraftForge.EVENT_BUS.register(new ThaumRenderEventHandler());
+			ThaumRenderEventHandler thaumRenderEventHandler = new ThaumRenderEventHandler();
+			MinecraftForge.EVENT_BUS.register(thaumRenderEventHandler);
+			TickRegistry.registerTickHandler(thaumRenderEventHandler, Side.CLIENT);
+			NetworkRegistry.instance().registerChannel(thaumRenderEventHandler, ThaumRenderEventHandler.THAUMCRAFT_FX_CHANNEL, Side.CLIENT);
 		}
 
 		packetHandler = new MusePacketHandler().register();
