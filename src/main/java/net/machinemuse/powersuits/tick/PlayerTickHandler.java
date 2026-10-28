@@ -14,10 +14,10 @@ import net.machinemuse.api.ModuleManager;
 import net.machinemuse.api.MuseCommonStrings;
 import net.machinemuse.api.MuseItemUtils;
 import net.machinemuse.general.MuseMathUtils;
+import net.machinemuse.powersuits.client.ClientProxy;
 import net.machinemuse.powersuits.common.MuseLogger;
 import net.machinemuse.powersuits.common.PlayerInputMap;
 import net.machinemuse.powersuits.event.MovementManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemFood;
@@ -473,9 +473,9 @@ public class PlayerTickHandler implements ITickHandler {
 
 		if (world.isRemote) {
 			if (movementLoopSound != null) {
-				Minecraft.getMinecraft().sndManager.playEntitySound(movementLoopSound, player, movementLoopVolume, movementLoopPitch, true);
+				ClientProxy.soundHandler.playEntitySound(movementLoopSound, player, movementLoopVolume, movementLoopPitch, true);
 			} else {
-				Minecraft.getMinecraft().sndManager.stopEntitySound(player);
+				ClientProxy.soundHandler.stopEntitySound(player);
 			}
 		}
 	}

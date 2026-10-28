@@ -167,6 +167,10 @@ public class Config {
 		return config.get(Configuration.CATEGORY_GENERAL, "Debugging info", false).getBoolean(false);
 	}
 
+	public static boolean isSoundEnabled() {
+		return config.get(Configuration.CATEGORY_GENERAL, "Sounds enabled", true).getBoolean(true);
+	}
+
 	/**
 	 * Once Forge has assigned IDs for all our items, this function will tell us
 	 * what was actually assigned.
@@ -493,6 +497,9 @@ public class Config {
 		
 		// Make the maximum armor per piece value show up in config file
 		getMaximumArmorPerPiece();
+
+		// Make the sounds enabled toggle show up in config file
+		isSoundEnabled();
 		
 		// red = 1, green = 2, blue = 4
 	}

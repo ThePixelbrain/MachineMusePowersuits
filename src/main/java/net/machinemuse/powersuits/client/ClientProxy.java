@@ -2,6 +2,7 @@ package net.machinemuse.powersuits.client;
 
 import net.machinemuse.powersuits.block.TileEntityTinkerTable;
 import net.machinemuse.powersuits.client.render.RenderPlasmaBolt;
+import net.machinemuse.powersuits.client.render.SoundHandler;
 import net.machinemuse.powersuits.client.render.TinkerTableRenderer;
 import net.machinemuse.powersuits.client.render.ToolRenderer;
 import net.machinemuse.powersuits.common.CommonProxy;
@@ -38,6 +39,7 @@ public class ClientProxy extends CommonProxy {
 	private static RenderTickHandler renderTickHandler;
 	private static PlayerTickHandler playerTickHandler;
 	public static KeybindKeyHandler keybindHandler;
+	public static SoundHandler soundHandler;
 
 	/**
 	 * Register all the custom renderers for this mod.
@@ -70,6 +72,8 @@ public class ClientProxy extends CommonProxy {
 		// Keybinds are read on login, once FML has applied options.txt to every
 		// mod's keybindings; see KeybindManager.loadKeybindsOnce()
 		NetworkRegistry.instance().registerConnectionHandler(new KeybindConnectionHandler());
+
+		soundHandler = new SoundHandler(Minecraft.getMinecraft().sndManager);
 
 		playerTickHandler = new PlayerTickHandler();
 		TickRegistry.registerTickHandler(playerTickHandler, Side.CLIENT);

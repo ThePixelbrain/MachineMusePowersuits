@@ -15,7 +15,7 @@ import net.machinemuse.general.geometry.MusePoint2D;
 import net.machinemuse.general.geometry.MuseRect;
 import net.machinemuse.general.gui.clickable.ClickableItem;
 import net.machinemuse.general.gui.clickable.ClickableModule;
-import net.minecraft.client.Minecraft;
+import net.machinemuse.powersuits.client.ClientProxy;
 
 public class ModuleSelectionFrame extends ScrollableFrame {
 	protected ItemSelectionFrame target;
@@ -130,7 +130,7 @@ public class ModuleSelectionFrame extends ScrollableFrame {
 		int i = 0;
 		for (ClickableModule module : moduleButtons) {
 			if (module.hitBox(x, y)) {
-				Minecraft.getMinecraft().sndManager.playSoundFX(MuseCommonStrings.SOUND_GUI_SELECT, 1.0F, 1.0F);
+				ClientProxy.soundHandler.playSoundFX(MuseCommonStrings.SOUND_GUI_SELECT, 1.0F, 1.0F);
 				selectedModule = i;
 				prevSelection = module.getModule();
 				break;
