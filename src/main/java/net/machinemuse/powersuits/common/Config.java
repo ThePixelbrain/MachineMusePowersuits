@@ -256,7 +256,7 @@ public class Config {
 
 		module = new ToggleablePowerModule(MuseCommonStrings.MODULE_FLIGHT_CONTROL, HEADONLY, MuseIcon.INDICATOR_1_GREEN,
 				MuseCommonStrings.CATEGORY_SPECIAL)
-				.setDescription("An integrated control circuit to help you fly better. Press Z to go down.")
+				.setDescription("An integrated control circuit to help you fly better. Hold the Flight Control Down key (Z by default, see Options > Controls) to go down.")
 				.addInstallCost(copyAndResize(ItemComponent.controlCircuit, 1));
 		addModule(module);
 

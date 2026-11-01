@@ -6,6 +6,7 @@ import java.util.List;
 import net.machinemuse.api.IModularItem;
 import net.machinemuse.api.MuseItemUtils;
 import net.machinemuse.general.gui.clickable.ClickableKeybinding;
+import net.machinemuse.powersuits.client.KeybindKeyHandler;
 import net.machinemuse.powersuits.client.KeybindManager;
 import net.machinemuse.powersuits.common.PlayerInputMap;
 import net.machinemuse.powersuits.network.MusePacket;
@@ -16,7 +17,6 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import cpw.mods.fml.common.ITickHandler;
@@ -97,7 +97,7 @@ public class ClientTickHandler implements ITickHandler {
 				slotSelected = -1;
 			}
 			PlayerInputMap inputmap = PlayerInputMap.getInputMapFor(player.username);
-			inputmap.downKey = Keyboard.isKeyDown(Keyboard.KEY_Z) && Minecraft.getMinecraft().inGameHasFocus;
+			inputmap.downKey = KeybindKeyHandler.isFlightControlDownHeld() && Minecraft.getMinecraft().inGameHasFocus;
 			inputmap.forwardKey = player.movementInput.moveForward;
 			inputmap.strafeKey = player.movementInput.moveStrafe;
 			inputmap.jumpKey = player.movementInput.jump;

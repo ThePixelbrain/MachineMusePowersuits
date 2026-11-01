@@ -9,6 +9,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.world.World;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import cpw.mods.fml.client.registry.KeyBindingRegistry.KeyHandler;
 import cpw.mods.fml.common.TickType;
@@ -18,9 +19,20 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class KeybindKeyHandler extends KeyHandler {
 	public static KeyBinding openKeybindGUI = new KeyBinding("Open Muse Keybind GUI", Keyboard.KEY_K);
+	public static KeyBinding flightControlDown = new KeyBinding("Flight Control Down", Keyboard.KEY_Z);
 
 	public KeybindKeyHandler() {
-		super(new KeyBinding[] { openKeybindGUI }, new boolean[] { false });
+		super(new KeyBinding[] { openKeybindGUI, flightControlDown }, new boolean[] { false, false });
+	}
+
+	/**
+	 * Polled rather than read from KeyBinding.pressed, which only tracks one
+	 * binding per key code and would go dead if another mod shares the key.
+	 * Negative key codes are mouse buttons, same as in FML's KeyHandler.
+	 */
+	public static boolean isFlightControlDownHeld() {
+		int keyCode = flightControlDown.keyCode;
+		return keyCode < 0 ? Mouse.isButtonDown(keyCode + 100) : Keyboard.isKeyDown(keyCode);
 	}
 
 	@Override
